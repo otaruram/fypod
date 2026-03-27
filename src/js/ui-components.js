@@ -110,14 +110,25 @@ const UIComponents = {
     
     modal.appendChild(sidebar);
     
+    // Setup event listeners AFTER appending to DOM
     document.getElementById('fypod-close-results').addEventListener('click', onCloseHandler);
     this._setupResizable(sidebar);
     
-    // Setup chat button
-    const chatBtn = document.getElementById('chat-with-ucing-btn');
-    if (chatBtn) {
-      chatBtn.addEventListener('click', onChatStart);
-    }
+    // Setup chat button - use setTimeout to ensure DOM is ready
+    setTimeout(() => {
+      const chatBtn = document.getElementById('chat-with-ucing-btn');
+      if (chatBtn) {
+        console.log('Chat button found, attaching listener');
+        chatBtn.addEventListener('click', (e) => {
+          console.log('Chat button clicked!');
+          e.preventDefault();
+          e.stopPropagation();
+          onChatStart();
+        });
+      } else {
+        console.error('Chat button not found in DOM');
+      }
+    }, 100);
     
     if (questions.length > 0) {
       this._setupQuizButton(questions, onQuizStart);
