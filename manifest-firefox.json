@@ -44,6 +44,7 @@
         "src/js/api.js",
         "src/js/ui-components.js",
         "src/js/quiz.js",
+        "src/js/chatbot.js",
         "src/js/main.js"
       ],
       "css": ["src/css/content.css"]

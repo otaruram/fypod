@@ -68,7 +68,7 @@ const UIComponents = {
   },
 
   // Render analysis results
-  renderResults(modal, analysis, questions, onCloseHandler, onQuizStart) {
+  renderResults(modal, analysis, questions, onCloseHandler, onQuizStart, onChatStart) {
     const existingContent = modal.querySelector('.fypod-content');
     if (existingContent) existingContent.remove();
     
@@ -76,6 +76,7 @@ const UIComponents = {
     const scamWarning = this._renderScamWarning(analysis.scamDetection);
     const salaryInfo = this._renderSalaryInfo(analysis.scamDetection);
     const insightsSection = this._renderInsights(analysis.insights);
+    const chatButton = this._renderChatButton();
     const quizSection = this._renderQuizSection(questions);
     
     const sidebar = document.createElement('div');
@@ -101,6 +102,8 @@ const UIComponents = {
         
         ${insightsSection}
         
+        ${chatButton}
+        
         ${quizSection}
       </div>
     `;
@@ -109,6 +112,12 @@ const UIComponents = {
     
     document.getElementById('fypod-close-results').addEventListener('click', onCloseHandler);
     this._setupResizable(sidebar);
+    
+    // Setup chat button
+    const chatBtn = document.getElementById('chat-with-ucing-btn');
+    if (chatBtn) {
+      chatBtn.addEventListener('click', onChatStart);
+    }
     
     if (questions.length > 0) {
       this._setupQuizButton(questions, onQuizStart);
@@ -152,6 +161,20 @@ const UIComponents = {
       </button>
       <div id="quiz-container" style="display: none;"></div>
     </div>`;
+  },
+  
+  _renderChatButton() {
+    return `
+      <div class="section">
+        <button id="chat-with-ucing-btn" class="chat-ucing-btn">
+          <span class="chat-icon">🐱</span>
+          <span class="chat-text">
+            <strong>Chat with Ucing</strong>
+            <small>Get personalized career advice from AI HR expert</small>
+          </span>
+        </button>
+      </div>
+    `;
   },
   
   _renderInsights(insights) {

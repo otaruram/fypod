@@ -432,7 +432,7 @@ function downloadAsPNG(index, buttonElement) {
       // Create canvas
       const canvas = document.createElement('canvas');
       canvas.width = 800;
-      canvas.height = 1000;
+      canvas.height = 1400; // Increased for insights
       const ctx = canvas.getContext('2d');
       
       // Background
@@ -529,9 +529,96 @@ function downloadAsPNG(index, buttonElement) {
           yPos += 10;
         });
         
+        yPos += 20;
+        
+        // Career Insights Section
+        if (analysis.insights) {
+          ctx.fillStyle = '#FFD700';
+          ctx.font = 'bold 16px Arial';
+          ctx.fillText('🎯 CAREER INSIGHTS', 40, yPos);
+          yPos += 30;
+          
+          const renderStars = (score) => '⭐'.repeat(score || 0) + '☆'.repeat(5 - (score || 0));
+          
+          // Career Growth
+          if (analysis.insights.careerGrowth) {
+            ctx.fillStyle = '#CCCCCC';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('📈 Career Growth', 40, yPos);
+            yPos += 20;
+            
+            ctx.fillStyle = '#FFD700';
+            ctx.font = '16px Arial';
+            ctx.fillText(renderStars(analysis.insights.careerGrowth.score), 40, yPos);
+            yPos += 20;
+            
+            ctx.fillStyle = '#AAAAAA';
+            ctx.font = '12px Arial';
+            yPos = wrapText(ctx, analysis.insights.careerGrowth.reason, 40, yPos, 720, 18);
+            yPos += 25;
+          }
+          
+          // Tech Modernity
+          if (analysis.insights.techModernity) {
+            ctx.fillStyle = '#CCCCCC';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('💻 Tech Stack Modernity', 40, yPos);
+            yPos += 20;
+            
+            ctx.fillStyle = '#FFD700';
+            ctx.font = '16px Arial';
+            ctx.fillText(renderStars(analysis.insights.techModernity.score), 40, yPos);
+            yPos += 20;
+            
+            ctx.fillStyle = '#AAAAAA';
+            ctx.font = '12px Arial';
+            yPos = wrapText(ctx, analysis.insights.techModernity.reason, 40, yPos, 720, 18);
+            yPos += 25;
+          }
+          
+          // Work-Life Balance
+          if (analysis.insights.workLifeBalance) {
+            ctx.fillStyle = '#CCCCCC';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('⚖️ Work-Life Balance', 40, yPos);
+            yPos += 20;
+            
+            ctx.fillStyle = '#4CAF50';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText(analysis.insights.workLifeBalance, 40, yPos);
+            yPos += 30;
+          }
+          
+          // Culture Fit
+          if (analysis.insights.cultureFit) {
+            ctx.fillStyle = '#CCCCCC';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('🏢 Company Culture', 40, yPos);
+            yPos += 20;
+            
+            ctx.fillStyle = '#AAAAAA';
+            ctx.font = '12px Arial';
+            yPos = wrapText(ctx, analysis.insights.cultureFit, 40, yPos, 720, 18);
+            yPos += 25;
+          }
+          
+          // Learning Opportunities
+          if (analysis.insights.learningOpportunities) {
+            ctx.fillStyle = '#CCCCCC';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('📚 Learning Opportunities', 40, yPos);
+            yPos += 20;
+            
+            ctx.fillStyle = '#AAAAAA';
+            ctx.font = '12px Arial';
+            yPos = wrapText(ctx, analysis.insights.learningOpportunities, 40, yPos, 720, 18);
+            yPos += 25;
+          }
+        }
+        
         // Salary
         if (analysis.scamDetection?.salaryRange) {
-          yPos += 20;
+          yPos += 10;
           ctx.fillStyle = '#888888';
           ctx.font = '14px Arial';
           ctx.fillText(`Est. Salary: ${analysis.scamDetection.salaryRange}`, 40, yPos);
