@@ -42,7 +42,7 @@ Chrome extension that analyzes job postings against your CV using AI, provides m
 2. **Setup**
    - Click extension icon in toolbar
    - Upload your CV (PDF format, max 5MB)
-   - Enter Sumopod API key: `sk-DeEyx-q-3NSj9TA8VlkoPQ`
+   - Enter Sumopod API key
    - Select default AI model
 
 3. **Use**
