@@ -95,3 +95,6 @@ if (document.readyState === 'loading') {
 } else {
   FypodApp.init();
 }
+
+// Expose to window for retry functionality
+window.FypodApp = FypodApp;

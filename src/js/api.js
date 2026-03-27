@@ -86,6 +86,11 @@ CRITICAL REQUIREMENTS:
 3. Detect Scam/MLM patterns - Check for: unrealistic salary, vague JD, pyramid language, "be your own boss"
 4. Estimate salary based on tech stack and market data
 5. Generate EXACTLY 3 Technical "Kill-Questions" - These should be deep, scenario-based questions that test real understanding
+6. **NEW: Career Growth Potential (1-5 stars)** - Analyze long-term career trajectory
+7. **NEW: Tech Stack Modernity (1-5 stars)** - Rate how modern/cutting-edge the tech is
+8. **NEW: Learning Opportunities** - What new skills you'll gain
+9. **NEW: Work-Life Balance Indicator** - Predict based on job requirements
+10. **NEW: Company Culture Vibe** - Startup/Corporate/Hybrid feel
 
 OUTPUT FORMAT (JSON ONLY, NO MARKDOWN):
 {
@@ -104,7 +109,20 @@ OUTPUT FORMAT (JSON ONLY, NO MARKDOWN):
     "<Deep technical question 1>",
     "<Deep technical question 2>",
     "<Deep technical question 3>"
-  ]
+  ],
+  "insights": {
+    "careerGrowth": {
+      "score": <1-5>,
+      "reason": "<brief explanation>"
+    },
+    "techModernity": {
+      "score": <1-5>,
+      "reason": "<tech stack assessment>"
+    },
+    "learningOpportunities": "<what skills you'll learn>",
+    "workLifeBalance": "<Excellent/Good/Moderate/Challenging>",
+    "cultureFit": "<Startup/Corporate/Hybrid> - <brief vibe>"
+  }
 }
 
 RULES:
@@ -112,7 +130,8 @@ RULES:
 - If less than 3 gaps, still provide 3 items (can say "No major gap in X")
 - Questions must be scenario-based, not trivia
 - Salary must include currency (USD/IDR/etc)
-- Be brutally honest about match score`;
+- Be brutally honest about match score
+- Insights must be data-driven, not generic`;
   },
   
   _buildQuizPrompt(answers, mode) {

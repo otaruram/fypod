@@ -48,7 +48,7 @@ const UIComponents = {
         <h3 style="margin-bottom: 8px;">Analysis Failed</h3>
         <p style="color: #ff6b6b; margin-bottom: 16px;">${message}</p>
         ${troubleshooting}
-        <button onclick="location.reload()" style="margin-top: 20px; background: #FFD700; color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;">
+        <button id="retry-analysis-btn" style="margin-top: 20px; background: #FFD700; color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
           Try Again
         </button>
       </div>
@@ -56,6 +56,15 @@ const UIComponents = {
     
     modal.appendChild(sidebar);
     document.getElementById('fypod-close-error').addEventListener('click', onCloseHandler);
+    
+    // Add retry functionality
+    document.getElementById('retry-analysis-btn').addEventListener('click', () => {
+      sidebar.remove();
+      // Trigger new analysis
+      if (window.FypodApp) {
+        window.FypodApp.startAnalysis();
+      }
+    });
   },
 
   // Render analysis results
@@ -66,6 +75,7 @@ const UIComponents = {
     const gaps = this._normalizeGaps(analysis.gaps);
     const scamWarning = this._renderScamWarning(analysis.scamDetection);
     const salaryInfo = this._renderSalaryInfo(analysis.scamDetection);
+    const insightsSection = this._renderInsights(analysis.insights);
     const quizSection = this._renderQuizSection(questions);
     
     const sidebar = document.createElement('div');
@@ -88,6 +98,8 @@ const UIComponents = {
             ${gaps.map(gap => `<div class="gap-item">${gap}</div>`).join('')}
           </div>
         </div>
+        
+        ${insightsSection}
         
         ${quizSection}
       </div>
@@ -140,6 +152,86 @@ const UIComponents = {
       </button>
       <div id="quiz-container" style="display: none;"></div>
     </div>`;
+  },
+  
+  _renderInsights(insights) {
+    if (!insights) return '';
+    
+    const renderStars = (score) => {
+      const filled = '⭐'.repeat(score || 0);
+      const empty = '☆'.repeat(5 - (score || 0));
+      return filled + empty;
+    };
+    
+    const getBalanceColor = (balance) => {
+      const colors = {
+        'Excellent': '#4CAF50',
+        'Good': '#8BC34A',
+        'Moderate': '#FFC107',
+        'Challenging': '#FF9800'
+      };
+      return colors[balance] || '#888';
+    };
+    
+    return `
+      <div class="section">
+        <div class="section-title">🎯 Career Insights</div>
+        <div class="insights-grid">
+          ${insights.careerGrowth ? `
+            <div class="insight-card">
+              <div class="insight-icon">📈</div>
+              <div class="insight-content">
+                <div class="insight-label">Career Growth</div>
+                <div class="insight-stars">${renderStars(insights.careerGrowth.score)}</div>
+                <div class="insight-desc">${insights.careerGrowth.reason || 'Good growth potential'}</div>
+              </div>
+            </div>
+          ` : ''}
+          
+          ${insights.techModernity ? `
+            <div class="insight-card">
+              <div class="insight-icon">💻</div>
+              <div class="insight-content">
+                <div class="insight-label">Tech Modernity</div>
+                <div class="insight-stars">${renderStars(insights.techModernity.score)}</div>
+                <div class="insight-desc">${insights.techModernity.reason || 'Modern tech stack'}</div>
+              </div>
+            </div>
+          ` : ''}
+          
+          ${insights.workLifeBalance ? `
+            <div class="insight-card">
+              <div class="insight-icon">⚖️</div>
+              <div class="insight-content">
+                <div class="insight-label">Work-Life Balance</div>
+                <div class="insight-value" style="color: ${getBalanceColor(insights.workLifeBalance)}">${insights.workLifeBalance}</div>
+                <div class="insight-desc">Based on job requirements</div>
+              </div>
+            </div>
+          ` : ''}
+          
+          ${insights.cultureFit ? `
+            <div class="insight-card">
+              <div class="insight-icon">🏢</div>
+              <div class="insight-content">
+                <div class="insight-label">Company Culture</div>
+                <div class="insight-desc">${insights.cultureFit}</div>
+              </div>
+            </div>
+          ` : ''}
+          
+          ${insights.learningOpportunities ? `
+            <div class="insight-card full-width">
+              <div class="insight-icon">📚</div>
+              <div class="insight-content">
+                <div class="insight-label">Learning Opportunities</div>
+                <div class="insight-desc">${insights.learningOpportunities}</div>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
   },
   
   _setupResizable(sidebar) {

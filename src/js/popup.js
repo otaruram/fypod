@@ -267,12 +267,59 @@ window.viewHistoryDetail = function(index) {
       } else {
         // Regular analysis result
         const analysis = JSON.parse(item.analysis);
+        
+        // Render insights if available
+        let insightsHTML = '';
+        if (analysis.insights) {
+          const renderStars = (score) => '⭐'.repeat(score || 0) + '☆'.repeat(5 - (score || 0));
+          
+          insightsHTML = `
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 8px;">Career Insights</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                ${analysis.insights.careerGrowth ? `
+                  <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px;">
+                    <div style="font-size: 9px; color: #888; margin-bottom: 4px;">📈 Career Growth</div>
+                    <div style="font-size: 12px; margin-bottom: 4px;">${renderStars(analysis.insights.careerGrowth.score)}</div>
+                    <div style="font-size: 9px; color: #999;">${analysis.insights.careerGrowth.reason}</div>
+                  </div>
+                ` : ''}
+                ${analysis.insights.techModernity ? `
+                  <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px;">
+                    <div style="font-size: 9px; color: #888; margin-bottom: 4px;">💻 Tech Modernity</div>
+                    <div style="font-size: 12px; margin-bottom: 4px;">${renderStars(analysis.insights.techModernity.score)}</div>
+                    <div style="font-size: 9px; color: #999;">${analysis.insights.techModernity.reason}</div>
+                  </div>
+                ` : ''}
+                ${analysis.insights.workLifeBalance ? `
+                  <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px;">
+                    <div style="font-size: 9px; color: #888; margin-bottom: 4px;">⚖️ Work-Life Balance</div>
+                    <div style="font-size: 11px; color: #FFD700; font-weight: 600;">${analysis.insights.workLifeBalance}</div>
+                  </div>
+                ` : ''}
+                ${analysis.insights.cultureFit ? `
+                  <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px;">
+                    <div style="font-size: 9px; color: #888; margin-bottom: 4px;">🏢 Culture</div>
+                    <div style="font-size: 10px; color: #aaa;">${analysis.insights.cultureFit}</div>
+                  </div>
+                ` : ''}
+              </div>
+              ${analysis.insights.learningOpportunities ? `
+                <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; margin-top: 8px;">
+                  <div style="font-size: 9px; color: #888; margin-bottom: 4px;">📚 Learning Opportunities</div>
+                  <div style="font-size: 10px; color: #aaa; line-height: 1.4;">${analysis.insights.learningOpportunities}</div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+        
         detailHTML = `
           <div class="history-detail">
             <button id="close-detail-btn" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: #888; font-size: 20px; cursor: pointer; z-index: 10;">×</button>
             <h3 style="margin: 0 0 16px 0; font-size: 16px; padding-right: 30px;">${item.jobTitle}</h3>
             <div style="text-align: center; margin-bottom: 20px;">
-              <div style="display: inline-flex; width: 60px; height: 60px; border-radius: 50%; border: 2px solid #fff; align-items: center; justify-content: center; font-size: 18px; font-weight: 600;">
+              <div style="display: inline-flex; width: 60px; height: 60px; border-radius: 50%; border: 2px solid #FFD700; align-items: center; justify-content: center; font-size: 18px; font-weight: 600;">
                 ${analysis.matchScore}%
               </div>
             </div>
@@ -280,6 +327,7 @@ window.viewHistoryDetail = function(index) {
               <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 8px;">Skill Gaps</div>
               ${(analysis.gaps || []).map(gap => `<div style="background: rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; font-size: 11px;">${gap}</div>`).join('')}
             </div>
+            ${insightsHTML}
             ${analysis.scamDetection?.salaryRange ? `<div style="font-size: 11px; color: #888; margin-top: 12px;">Est. Salary: ${analysis.scamDetection.salaryRange}</div>` : ''}
             ${analysis.scamDetection?.isScam ? `<div style="font-size: 11px; color: #ff6b6b; margin-top: 8px;">⚠️ ${analysis.scamDetection.reason}</div>` : ''}
             ${item.url ? `<a href="${item.url}" target="_blank" style="display: block; margin-top: 12px; font-size: 11px; color: #4CAF50; text-decoration: none;">View Job Posting →</a>` : ''}
