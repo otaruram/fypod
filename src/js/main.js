@@ -18,9 +18,14 @@ const FypodApp = {
   },
   
   async startAnalysis() {
-    const jobDescription = DOMUtils.extractJobDescription();
-    
     try {
+      const jobDescription = DOMUtils.extractJobDescription();
+      
+      if (!jobDescription || jobDescription === 'No job description found') {
+        alert('⚠️ Could not find job description on this page.\n\nPlease make sure you are on a job posting page.');
+        return;
+      }
+      
       const settings = await StorageManager.getSettings();
       
       // Validate settings

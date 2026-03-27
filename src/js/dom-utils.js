@@ -4,19 +4,26 @@ const DOMUtils = {
   extractJobDescription() {
     for (const selector of SELECTORS.jobDescription) {
       const element = document.querySelector(selector);
-      if (element) {
-        return element.innerText;
+      if (element && element.innerText) {
+        const text = element.innerText.trim();
+        if (text) {
+          return text;
+        }
       }
     }
-    return document.body.innerText;
+    // Fallback to body text
+    return document.body.innerText || 'No job description found';
   },
   
   // Extract job title from page
   extractJobTitle() {
     for (const selector of SELECTORS.jobTitle) {
       const element = document.querySelector(selector);
-      if (element && element.innerText.trim()) {
-        return element.innerText.trim().substring(0, 100);
+      if (element && element.innerText) {
+        const text = element.innerText.trim();
+        if (text) {
+          return text.substring(0, 100);
+        }
       }
     }
     return 'Job Analysis';

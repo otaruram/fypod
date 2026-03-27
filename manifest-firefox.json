@@ -1,0 +1,63 @@
+{
+  "manifest_version": 2,
+  "name": "Fypod",
+  "version": "1.0.0",
+  "description": "AI-Powered Career Accelerator for Job Portals",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "https://www.linkedin.com/*",
+    "https://glints.com/*",
+    "https://www.jobstreet.co.id/*",
+    "https://www.jobstreet.com/*",
+    "https://id.indeed.com/*",
+    "https://www.indeed.com/*",
+    "https://www.kalibrr.com/*",
+    "https://www.glassdoor.com/*",
+    "https://id.jobsdb.com/*"
+  ],
+  "browser_action": {
+    "default_popup": "src/html/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/jobs/*",
+        "https://glints.com/opportunities/jobs/*",
+        "https://www.jobstreet.co.id/job/*",
+        "https://www.jobstreet.com/job/*",
+        "https://id.indeed.com/viewjob*",
+        "https://www.indeed.com/viewjob*",
+        "https://www.kalibrr.com/c/*/*",
+        "https://www.glassdoor.com/job-listing/*",
+        "https://id.jobsdb.com/job/*"
+      ],
+      "js": [
+        "src/js/config.js",
+        "src/js/dom-utils.js",
+        "src/js/storage.js",
+        "src/js/api.js",
+        "src/js/ui-components.js",
+        "src/js/quiz.js",
+        "src/js/main.js"
+      ],
+      "css": ["src/css/content.css"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "fypod@otaruram.com",
+      "strict_min_version": "109.0"
+    }
+  }
+}
