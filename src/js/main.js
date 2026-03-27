@@ -62,7 +62,8 @@ const FypodApp = {
         analysis,
         questions,
         () => this.showIconButton(),
-        (qs) => this.startQuiz(qs)
+        (qs) => this.startQuiz(qs),
+        () => ChatbotModule.showChat()
       );
       
     } catch (error) {

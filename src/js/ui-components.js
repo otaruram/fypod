@@ -123,7 +123,16 @@ const UIComponents = {
           console.log('Chat button clicked!');
           e.preventDefault();
           e.stopPropagation();
-          onChatStart();
+          try {
+            if (typeof onChatStart === 'function') {
+              console.log('Calling onChatStart...');
+              onChatStart();
+            } else {
+              console.error('onChatStart is not a function:', onChatStart);
+            }
+          } catch (error) {
+            console.error('Error calling onChatStart:', error);
+          }
         });
       } else {
         console.error('Chat button not found in DOM');

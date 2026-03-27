@@ -171,6 +171,8 @@ function loadHistory() {
       // Add badge for quiz items
       const badge = item.type === 'quiz' ? '<span style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-left: 6px;">QUIZ</span>' : '';
       
+      const ucingBtn = item.type === 'quiz' ? '' : `<button class="history-btn ucing-btn" data-index="${index}" title="Ucing Insights">🐱</button>`;
+      
       return `
         <div class="history-item" data-index="${index}">
           <div class="history-info">
@@ -178,6 +180,7 @@ function loadHistory() {
             <div class="history-date">${new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
           </div>
           <div class="history-actions">
+            ${ucingBtn}
             <button class="history-btn download-btn" data-index="${index}" title="Download PNG">📥</button>
             <button class="history-btn copy-btn" data-index="${index}" title="Copy">📋</button>
             <button class="history-btn delete-btn" data-index="${index}" title="Delete">🗑️</button>
@@ -201,6 +204,14 @@ function loadHistory() {
         e.stopPropagation();
         const index = parseInt(btn.dataset.index);
         downloadAsPNG(index, btn);
+      });
+    });
+
+    document.querySelectorAll('.ucing-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const index = parseInt(btn.dataset.index);
+        showUcingInsights(index);
       });
     });
     
@@ -678,3 +689,73 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   ctx.fillText(line, x, y);
   return y + lineHeight;
 }
+
+window.showUcingInsights = function(index) {
+  chrome.storage.local.get(['history'], (result) => {
+    const item = result.history[index];
+    if (!item || item.type === 'quiz') {
+      alert("No AI insights available for this item.");
+      return;
+    }
+    
+    try {
+      const analysis = JSON.parse(item.analysis);
+      let insightsHTML = '';
+      
+      if (analysis.insights) {
+        const renderStars = (score) => '⭐'.repeat(score || 0) + '☆'.repeat(5 - (score || 0));
+        
+        insightsHTML = `
+          <div style="background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.2); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,215,0,0.1); padding-bottom: 12px;">
+              <div style="font-size: 24px;">🐱</div>
+              <div>
+                <div style="color: #FFD700; font-weight: 600; font-size: 14px;">Ucing's HR Analysis</div>
+                <div style="font-size: 10px; color: #888;">For ${item.jobTitle}</div>
+              </div>
+            </div>
+            
+            <div style="font-size: 12px; line-height: 1.6; color: #e0e0e0;">
+              <p style="margin-bottom: 8px;"><strong>💡 The Verdict:</strong> With a Match Score of ${analysis.matchScore}%, this role looks ${analysis.matchScore > 75 ? 'like a very strong fit!' : analysis.matchScore > 50 ? 'promising, but requires some upskilling.' : 'like a stretch, but could be a good learning opportunity.'}</p>
+              
+              ${analysis.insights.careerGrowth ? `<p style="margin-bottom: 8px;"><strong>📈 Career Trajectory:</strong> ${analysis.insights.careerGrowth.reason} (${renderStars(analysis.insights.careerGrowth.score)})</p>` : ''}
+              
+              ${analysis.insights.workLifeBalance ? `<p style="margin-bottom: 8px;"><strong>⚖️ Work-Life Balance:</strong> Expect a ${analysis.insights.workLifeBalance.toLowerCase()} environment.</p>` : ''}
+              
+              ${analysis.insights.learningOpportunities ? `<p style="margin-bottom: 8px;"><strong>📚 Upskilling Needed:</strong> ${analysis.insights.learningOpportunities}</p>` : ''}
+              
+              ${analysis.scamDetection?.isScam ? `<p style="margin-top: 12px; color: #ff6b6b; padding: 8px; background: rgba(255,0,0,0.1); border-radius: 4px;"><strong>⚠️ HR Warning:</strong> ${analysis.scamDetection.reason}</p>` : ''}
+            </div>
+          </div>
+        `;
+      } else {
+        insightsHTML = `
+          <div style="background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.2); border-radius: 8px; padding: 16px; margin-bottom: 16px; text-align: center;">
+            <div style="font-size: 24px; margin-bottom: 8px;">🐱</div>
+            <div style="color: #FFD700; font-weight: 600; font-size: 13px; margin-bottom: 4px;">No Insights Available</div>
+            <div style="font-size: 11px; color: #888;">Detailed HR insights were not generated for this analysis.</div>
+          </div>
+        `;
+      }
+      
+      const detailHTML = `
+        <div class="history-detail">
+          <button id="close-ucing-btn" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: #888; font-size: 20px; cursor: pointer; z-index: 10;">×</button>
+          ${insightsHTML}
+          <div style="text-align: center; margin-top: 20px;">
+            <button id="back-to-history" style="background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: all 0.2s;">← Back to details</button>
+          </div>
+        </div>
+      `;
+      
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = detailHTML;
+      
+      document.getElementById('close-ucing-btn').addEventListener('click', closeHistoryDetail);
+      document.getElementById('back-to-history').addEventListener('click', () => viewHistoryDetail(index));
+      
+    } catch (e) {
+      console.error('Error showing Ucing insights:', e);
+    }
+  });
+};

@@ -71,10 +71,22 @@ const DOMUtils = {
   
   // Check if current page is a job page
   isJobPage(mode) {
+    console.log('🔍 Checking if job page...');
+    console.log('🔍 Mode:', mode);
+    console.log('🔍 Hostname:', window.location.hostname);
+    console.log('🔍 Pathname:', window.location.pathname);
+    
     const patterns = mode === 'all' ? PORTAL_PATTERNS.all : PORTAL_PATTERNS.linkedin;
-    return patterns.some(pattern => 
-      window.location.hostname.includes(pattern.domain) && 
-      window.location.pathname.includes(pattern.path)
-    );
+    console.log('🔍 Patterns to check:', patterns);
+    
+    const result = patterns.some(pattern => {
+      const hostnameMatch = window.location.hostname.includes(pattern.domain);
+      const pathMatch = window.location.pathname.includes(pattern.path);
+      console.log(`🔍 Pattern ${pattern.domain}${pattern.path}: hostname=${hostnameMatch}, path=${pathMatch}`);
+      return hostnameMatch && pathMatch;
+    });
+    
+    console.log('🔍 Result:', result);
+    return result;
   }
 };

@@ -1,4 +1,45 @@
 // Ucing Chatbot - AI HR Professional Assistant
+const ChatbotModule = {
+  // Show chat interface
+  showChat() {
+    console.log('💬 Showing Ucing chat...');
+    const modal = document.getElementById('fypod-modal');
+    const resultsDiv = modal.querySelector('.fypod-results');
+    
+    if (resultsDiv) {
+      resultsDiv.style.display = 'none';
+    }
+    
+    // Get current analysis context
+    const analysis = window.FypodApp?.currentAnalysis;
+    if (!analysis) {
+      console.error('No analysis data available');
+      return;
+    }
+    
+    // Initialize chatbot with context
+    StorageManager.getSettings().then(settings => {
+      const jobDescription = DOMUtils.extractJobDescription();
+      UcingChatbot.init(analysis, settings.cvData, jobDescription);
+      
+      // Render chat UI
+      const contentDiv = modal.querySelector('.fypod-content');
+      if (contentDiv) {
+        let chatContainer = contentDiv.querySelector('#ucing-chat-wrapper');
+        if (!chatContainer) {
+          chatContainer = document.createElement('div');
+          chatContainer.id = 'ucing-chat-wrapper';
+          chatContainer.style.height = '100%';
+          chatContainer.style.width = '100%';
+          contentDiv.appendChild(chatContainer);
+        }
+        chatContainer.style.display = 'block';
+        UcingChatbot.renderChatUI(chatContainer);
+      }
+    });
+  }
+};
+
 const UcingChatbot = {
   conversationHistory: [],
   currentContext: null,
@@ -19,12 +60,12 @@ const UcingChatbot = {
     container.innerHTML = `
       <div class="ucing-chat-container">
         <div class="ucing-header">
+          <button id="back-to-results-btn" class="chat-back-btn" title="Back to Results">❮ Back</button>
           <div class="ucing-avatar">🐱</div>
           <div class="ucing-info">
             <div class="ucing-name">Ucing</div>
             <div class="ucing-status">HR Professional AI • Online</div>
           </div>
-          <button id="close-chat-btn" class="chat-close-btn">×</button>
         </div>
         
         <div class="ucing-messages" id="ucing-messages">
@@ -81,6 +122,7 @@ const UcingChatbot = {
     const sendBtn = document.getElementById('ucing-send-btn');
     const input = document.getElementById('ucing-input');
     const closeBtn = document.getElementById('close-chat-btn');
+    const backBtn = document.getElementById('back-to-results-btn');
     
     sendBtn.addEventListener('click', () => this._sendMessage());
     
@@ -90,11 +132,16 @@ const UcingChatbot = {
         this._sendMessage();
       }
     });
+
+    const closeChatHandler = () => {
+      const wrapper = document.getElementById('ucing-chat-wrapper');
+      if (wrapper) wrapper.style.display = 'none';
+      const resultsDiv = document.querySelector('.fypod-results');
+      if (resultsDiv) resultsDiv.style.display = 'block';
+    };
     
-    closeBtn.addEventListener('click', () => {
-      document.querySelector('.ucing-chat-container').style.display = 'none';
-      document.querySelector('.fypod-results').style.display = 'block';
-    });
+    closeBtn.addEventListener('click', closeChatHandler);
+    if (backBtn) backBtn.addEventListener('click', closeChatHandler);
     
     // Quick action buttons
     document.querySelectorAll('.quick-action-btn').forEach(btn => {
@@ -212,7 +259,8 @@ EXPERTISE:
 
 RESPONSE STYLE:
 - Be concise but comprehensive (3-5 paragraphs max)
-- Use bullet points for clarity
+- Do NOT use markdown symbols like **, *, #, -- (just use plain text or emojis)
+- Use standard bullet points (•) for lists
 - Include specific examples when possible
 - Provide actionable next steps
 - Add relevant learning resources/links when helpful
@@ -306,11 +354,26 @@ Based on this context, provide helpful, specific advice. Include links to learni
   
   // Format message (convert markdown-like syntax to HTML)
   _formatMessage(message) {
-    return message
-      .replace(/\n/g, '<br>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+    let formatted = message;
+    
+    // Remove markdown headings (##, #, ###)
+    formatted = formatted.replace(/^#{1,6}\s+/gm, '');
+    
+    // Parse bold and italic
+    formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Replace markdown list dashes with explicit bullets
+    formatted = formatted.replace(/^-\s+/gm, '• ');
+    
+    // Clean up strange characters
+    formatted = formatted.replace(/--/g, '-');
+    
+    // Convert links
+    formatted = formatted.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+    
+    // Convert newlines to breaks
+    return formatted.replace(/\n/g, '<br>');
   },
   
   // Escape HTML

@@ -21,11 +21,11 @@ const CONFIG = {
 
 const PORTAL_PATTERNS = {
   linkedin: [
-    { domain: 'linkedin.com', path: '/jobs/' }
+    { domain: 'linkedin.com', path: '/jobs' }
   ],
   
   all: [
-    { domain: 'linkedin.com', path: '/jobs/' },
+    { domain: 'linkedin.com', path: '/jobs' },
     { domain: 'glints.com', path: '/opportunities/jobs/' },
     { domain: 'jobstreet', path: '/job/' },
     { domain: 'indeed.com', path: 'viewjob' },
