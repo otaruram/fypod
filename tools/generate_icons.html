@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Fypod Icon Generator</title>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: monospace;
+      padding: 20px;
+      text-align: center;
+    }
+    canvas {
+      border: 1px solid #333;
+      margin: 10px;
+      background: #1a1a1a;
+    }
+    button {
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fypod Icon Generator</h1>
+  <p>Click buttons below to download icons</p>
+  
+  <div>
+    <canvas id="icon16" width="16" height="16"></canvas>
+    <canvas id="icon48" width="48" height="48"></canvas>
+    <canvas id="icon128" width="128" height="128"></canvas>
+  </div>
+  
+  <div>
+    <button onclick="downloadIcon(16)">Download 16x16</button>
+    <button onclick="downloadIcon(48)">Download 48x48</button>
+    <button onclick="downloadIcon(128)">Download 128x128</button>
+  </div>
+
+  <script>
+    function drawIcon(size) {
+      const canvas = document.getElementById(`icon${size}`);
+      const ctx = canvas.getContext('2d');
+      const scale = size / 128;
+      
+      // Clear canvas
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(0, 0, size, size);
+      
+      // Draw rounded square background
+      const cornerRadius = 28 * scale;
+      ctx.fillStyle = '#1a1a1a';
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 1 * scale;
+      roundRect(ctx, 8 * scale, 8 * scale, 112 * scale, 112 * scale, cornerRadius);
+      ctx.fill();
+      ctx.stroke();
+      
+      // Draw organic 'F' shape
+      ctx.fillStyle = '#e0e0e0';
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      
+      // Top horizontal bar
+      ctx.moveTo(35 * scale, 35 * scale);
+      ctx.lineTo(85 * scale, 35 * scale);
+      ctx.lineTo(85 * scale, 50 * scale);
+      ctx.lineTo(55 * scale, 50 * scale);
+      
+      // Middle horizontal bar
+      ctx.lineTo(55 * scale, 60 * scale);
+      ctx.lineTo(75 * scale, 60 * scale);
+      ctx.lineTo(75 * scale, 75 * scale);
+      ctx.lineTo(55 * scale, 75 * scale);
+      
+      // Vertical bar
+      ctx.lineTo(55 * scale, 98 * scale);
+      ctx.lineTo(40 * scale, 98 * scale);
+      ctx.lineTo(40 * scale, 35 * scale);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Draw 3D wireframe cube
+      ctx.globalAlpha = 0.8;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5 * scale;
+      
+      // Front face
+      ctx.strokeRect(45 * scale, 45 * scale, 30 * scale, 30 * scale);
+      
+      // Back face
+      ctx.globalAlpha = 0.6;
+      ctx.strokeStyle = '#aaaaaa';
+      ctx.lineWidth = 1.2 * scale;
+      ctx.strokeRect(53 * scale, 37 * scale, 30 * scale, 30 * scale);
+      
+      // Connecting edges
+      ctx.globalAlpha = 0.7;
+      ctx.strokeStyle = '#cccccc';
+      ctx.lineWidth = 1.2 * scale;
+      ctx.beginPath();
+      ctx.moveTo(45 * scale, 45 * scale);
+      ctx.lineTo(53 * scale, 37 * scale);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(75 * scale, 45 * scale);
+      ctx.lineTo(83 * scale, 37 * scale);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(75 * scale, 75 * scale);
+      ctx.lineTo(83 * scale, 67 * scale);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(45 * scale, 75 * scale);
+      ctx.lineTo(53 * scale, 67 * scale);
+      ctx.stroke();
+      
+      // Diagonal cross lines
+      ctx.globalAlpha = 0.3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 0.8 * scale;
+      ctx.beginPath();
+      ctx.moveTo(45 * scale, 45 * scale);
+      ctx.lineTo(75 * scale, 75 * scale);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(75 * scale, 45 * scale);
+      ctx.lineTo(45 * scale, 75 * scale);
+      ctx.stroke();
+      
+      ctx.globalAlpha = 1;
+    }
+    
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+    
+    function downloadIcon(size) {
+      const canvas = document.getElementById(`icon${size}`);
+      const link = document.createElement('a');
+      link.download = `icon${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+    
+    // Draw all icons on load
+    drawIcon(16);
+    drawIcon(48);
+    drawIcon(128);
+  </script>
+</body>
+</html>

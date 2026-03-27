@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <svg width="32" height="32" viewBox="0 0 128 128" class="logo">
+        <rect x="8" y="8" width="112" height="112" rx="28" fill="#1a1a1a"/>
+        <path d="M 35 35 L 85 35 L 85 50 L 55 50 L 55 60 L 75 60 L 75 75 L 55 75 L 55 98 L 40 98 L 40 35 Z" fill="#e0e0e0" opacity="0.9"/>
+        <rect x="45" y="45" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.8"/>
+        <rect x="53" y="37" width="30" height="30" fill="none" stroke="#aaa" stroke-width="1.2" opacity="0.6"/>
+        <line x1="45" y1="45" x2="53" y2="37" stroke="#ccc" stroke-width="1.2" opacity="0.7"/>
+        <line x1="75" y1="45" x2="83" y2="37" stroke="#ccc" stroke-width="1.2" opacity="0.7"/>
+        <line x1="75" y1="75" x2="83" y2="67" stroke="#ccc" stroke-width="1.2" opacity="0.7"/>
+        <line x1="45" y1="75" x2="53" y2="67" stroke="#ccc" stroke-width="1.2" opacity="0.7"/>
+      </svg>
+      <h1>Fypod</h1>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab active" data-tab="setup">Setup</button>
+      <button class="tab" data-tab="settings">Settings</button>
+      <button class="tab" data-tab="history">History</button>
+    </div>
+
+    <div class="tab-content" id="setup">
+      <div class="upload-zone" id="dropzone">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+        </svg>
+        <p>Drop your CV (PDF) here</p>
+        <input type="file" id="cvFile" accept=".pdf" hidden>
+      </div>
+      
+      <div class="input-group">
+        <label>Sumopod API Key</label>
+        <input type="password" id="apiKey" placeholder="Enter your API key">
+      </div>
+      
+      <div class="input-group">
+        <label>Default AI Model</label>
+        <select id="defaultModel">
+          <option value="claude-haiku-4-5">Claude Haiku 4.5 (Fast)</option>
+          <option value="gpt-4.1-mini">GPT 4.1 Mini (Balanced)</option>
+          <option value="gpt-5.2">GPT 5.2 (Advanced)</option>
+          <option value="gemini/gemini-2.5-pro">Gemini 2.5 Pro (Technical)</option>
+          <option value="glm-5.1">GLM 5.1 (Multilingual)</option>
+          <option value="kimi-k2">Kimi K2 (Long Context)</option>
+        </select>
+      </div>
+      
+      <div class="status">
+        <span id="statusIndicator">🔴</span>
+        <span id="statusText">Not connected</span>
+      </div>
+    </div>
+
+    <div class="tab-content hidden" id="settings">
+      <div class="settings-section">
+        <h3>Job Portal Mode</h3>
+        <p class="settings-desc">Choose which job portals to enable Fypod on</p>
+        
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="portalMode" value="linkedin" id="mode-linkedin" checked>
+            <div class="radio-content">
+              <div class="radio-title">LinkedIn Only</div>
+              <div class="radio-desc">Works only on LinkedIn job pages</div>
+            </div>
+          </label>
+          
+          <label class="radio-option">
+            <input type="radio" name="portalMode" value="all" id="mode-all">
+            <div class="radio-content">
+              <div class="radio-title">All Job Portals</div>
+              <div class="radio-desc">LinkedIn, Glints, JobStreet, Indeed, Kalibrr, Glassdoor, JobsDB</div>
+            </div>
+          </label>
+        </div>
+        
+        <div class="settings-note">
+          <strong>Note:</strong> After changing mode, reload the job page to see the icon.
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content hidden" id="history">
+      <div id="historyList"></div>
+    </div>
+  </div>
+  
+  <script src="../js/popup.js"></script>
+</body>
+</html>

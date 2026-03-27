@@ -1,0 +1,50 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lighting" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="1" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background squircle -->
+  <rect x="8" y="8" width="112" height="112" rx="28" ry="28" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  
+  <!-- 3D Wireframe cube - back face (offset for depth) -->
+  <line x1="53" y1="37" x2="83" y2="37" stroke="#aaaaaa" stroke-width="1.2" opacity="0.6"/>
+  <line x1="83" y1="37" x2="83" y2="67" stroke="#aaaaaa" stroke-width="1.2" opacity="0.6"/>
+  <line x1="83" y1="67" x2="53" y2="67" stroke="#aaaaaa" stroke-width="1.2" opacity="0.6"/>
+  <line x1="53" y1="67" x2="53" y2="37" stroke="#aaaaaa" stroke-width="1.2" opacity="0.6"/>
+  
+  <!-- 3D Wireframe cube - connecting edges -->
+  <line x1="45" y1="45" x2="53" y2="37" stroke="#cccccc" stroke-width="1.2" opacity="0.7"/>
+  <line x1="75" y1="45" x2="83" y2="37" stroke="#cccccc" stroke-width="1.2" opacity="0.7"/>
+  <line x1="75" y1="75" x2="83" y2="67" stroke="#cccccc" stroke-width="1.2" opacity="0.7"/>
+  <line x1="45" y1="75" x2="53" y2="67" stroke="#cccccc" stroke-width="1.2" opacity="0.7"/>
+  
+  <!-- Letter F INSIDE the cube -->
+  <path d="M 50 48 L 70 48 L 70 52 L 56 52 L 56 58 L 68 58 L 68 62 L 56 62 L 56 72 L 50 72 Z" 
+        fill="#FFD700" 
+        filter="url(#shadow)"
+        opacity="0.95"/>
+  
+  <!-- 3D Wireframe cube - front face (on top of F) -->
+  <line x1="45" y1="45" x2="75" y2="45" stroke="#ffffff" stroke-width="1.5" opacity="0.8"/>
+  <line x1="75" y1="45" x2="75" y2="75" stroke="#ffffff" stroke-width="1.5" opacity="0.8"/>
+  <line x1="75" y1="75" x2="45" y2="75" stroke="#ffffff" stroke-width="1.5" opacity="0.8"/>
+  <line x1="45" y1="75" x2="45" y2="45" stroke="#ffffff" stroke-width="1.5" opacity="0.8"/>
+  
+  <!-- Diagonal cross lines for multi-layered effect -->
+  <line x1="45" y1="45" x2="75" y2="75" stroke="#ffffff" stroke-width="0.8" opacity="0.2"/>
+  <line x1="75" y1="45" x2="45" y2="75" stroke="#ffffff" stroke-width="0.8" opacity="0.2"/>
+</svg>
